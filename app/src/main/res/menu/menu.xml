@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="Accueil" />
+        <item
+            android:id="@+id/nav_depense"
+            android:icon="@drawable/ic_expense"
+            android:title="Dépenses" />
+        <item
+            android:id="@+id/nav_revenu"
+            android:icon="@drawable/ic_income"
+            android:title="Revenus" />
+        <item
+            android:id="@+id/nav_epargne"
+            android:icon="@drawable/ic_saving"
+            android:title="Epargne" />
+        <item
+            android:id="@+id/nav_dettes"
+            android:icon="@drawable/ic_loans"
+            android:title="Dettes" />
+        <item
+            android:id="@+id/nav_creance"
+            android:icon="@drawable/ic_creance"
+            android:title="Créances" />
+
+
+    </group>
+
+
+    <item android:title="Configurations">
+
+        <menu android:checkableBehavior="single">
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_securite"
+                    android:icon="@drawable/ic_secure"
+                    android:title="Sécurité" />
+                <item
+                    android:id="@+id/nav_profile"
+                    android:icon="@drawable/ic_profile"
+                    android:title="Profil" />
+            </group>
+        </menu>
+
+    </item>
+
+
+</menu>
