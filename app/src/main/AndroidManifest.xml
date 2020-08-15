@@ -9,11 +9,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Securite" />
-        <activity android:name=".Profile" />
-        <activity android:name=".Creances" />
-        <activity android:name=".Dettes" />
-        <activity android:name=".Encaissement" />
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
