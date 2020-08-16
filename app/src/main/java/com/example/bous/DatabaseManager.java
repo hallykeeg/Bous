@@ -264,6 +264,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
         sommeDepenses = cursor4.getFloat(cursor4.getColumnIndex("montant"));
         cursor4.close();
         balance = sommeRevenus - sommeEpargne + sommeEpargneVersRevenus - sommeDepenses;
+        if (balance < 0) {
+            balance = 0;
+        }
         return balance;
     }
 
