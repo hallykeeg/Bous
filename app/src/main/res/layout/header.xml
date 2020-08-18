@@ -26,6 +26,6 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-condensed-light"
         android:text="Pour une meilleure vie"
-        android:textColor="#EFEAEA" />
+        android:textColor="#ffffff" />
     android:textSize="14sp" />
 </LinearLayout>
