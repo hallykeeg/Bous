@@ -3,14 +3,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".FragmentCreances">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="creances"
-        android:background="@color/design_default_color_background"
-        android:layout_centerInParent="true" />
+        android:orientation="vertical">
+
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/ajout_creances"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorPrimaryDark"
+            app:fab_colorPressed="#CBCBCB"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="15dp"
+            app:fab_icon="@drawable/ic_add"
+            app:fab_addButtonColorNormal="@color/colorPrimaryDark"
+            app:fab_addButtonColorPressed="@color/colorPrimary"
+
+            app:fab_size="normal" />
+
+
+    </RelativeLayout>
 
 </FrameLayout>
