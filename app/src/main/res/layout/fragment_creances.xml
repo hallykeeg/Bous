@@ -12,6 +12,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/listviewCreances"
+            android:layout_margin="2dp"
+            android:layout_centerInParent="false" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/ajout_creances"

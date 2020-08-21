@@ -4,8 +4,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,7 +17,9 @@ import androidx.fragment.app.Fragment;
  */
 public class FragmentDettes extends Fragment {
     com.getbase.floatingactionbutton.FloatingActionButton fab;
-
+    ListView listView;
+    ArrayList<CustomModel> arrayList;
+    CustomAdapter customAdapter;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -61,6 +66,12 @@ public class FragmentDettes extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_dettes, container, false);
         fab = view.findViewById(R.id.ajout_dettes);
+        listView = view.findViewById(R.id.listviewDettes);
+        arrayList = new ArrayList<>();
+        arrayList.add(new CustomModel("22 Janvier 2020", "Sergio S. OSSON ", 250));
+        customAdapter = new CustomAdapter(getContext(), R.layout.custom_listview, arrayList);
+        listView.setAdapter(customAdapter);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
