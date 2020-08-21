@@ -15,4 +15,10 @@
         <item name="android:activatedBackgroundIndicator">@drawable/drawer_list_selector</item>
 
     </style>
+
+    <style name="fabStyle">
+        <item name="android:background">@drawable/background</item>
+        <item name="android:textColor">#ffffff</item>
+
+    </style>
 </resources>

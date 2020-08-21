@@ -140,5 +140,6 @@ public class FragmentAccueil extends Fragment {
         public void creancesButtonAction();
 
         public void statsButtonAction();
+
     }
 }

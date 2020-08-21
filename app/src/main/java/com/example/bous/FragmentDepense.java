@@ -1,12 +1,11 @@
 package com.example.bous;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,7 +13,7 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class FragmentDepense extends Fragment {
-
+    com.getbase.floatingactionbutton.FloatingActionButton fabObjet, fabNouveau;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -59,6 +58,23 @@ public class FragmentDepense extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_depense, container, false);
+        View view = inflater.inflate(R.layout.fragment_depense, container, false);
+        fabNouveau = view.findViewById(R.id.nouveau);
+        fabObjet = view.findViewById(R.id.objet);
+
+        fabNouveau.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentAjoutDepenses()).commit();
+            }
+        });
+
+        fabObjet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ObjetDepenseFragment()).commit();
+            }
+        });
+        return view;
     }
 }
