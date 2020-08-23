@@ -11,9 +11,10 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 
 public class DatabaseManager extends SQLiteOpenHelper {
-
+    private static DatabaseManager databaseManager = null;
     private static final String name = "bous.db";
     private static final Integer version = 1;
+
 
     private static final String utilisateurTable = "CREATE TABLE IF NOT EXISTS utilisateur(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT(15) NOT NULL," +
             "password TEXT(50) NOT NULL)";
@@ -40,8 +41,16 @@ public class DatabaseManager extends SQLiteOpenHelper {
             "FOREIGN KEY(id_objet_depenses) " +
             "REFERENCES objet_depenses (id_objet_depenses) )";
 
+    //singleton pattern
 
-    public DatabaseManager(@Nullable Context context) {
+    public static synchronized DatabaseManager getDatabaseManager(@Nullable Context context) {
+        if (databaseManager == null) {
+            databaseManager = new DatabaseManager(context);
+        }
+        return databaseManager;
+    }
+
+    private DatabaseManager(@Nullable Context context) {
         super(context, name, null, version);
     }
 
@@ -159,9 +168,20 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public long insertObjetDepenses(String nom) {
         long state;
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("nom", nom);
-        state = db.insert("objet_depenses", null, contentValues);
+        //EVITER LA DUPLICATION D'UN MEME OBJET
+        String sql = "SELECT COUNT(id_objet_depenses) AS card FROM objet_depenses WHERE nom=?";
+        String[] params = new String[]{nom};
+        final Cursor cursor = db.rawQuery(sql, params);
+        cursor.moveToFirst();
+        int card = cursor.getInt(cursor.getColumnIndex("card"));
+        if (card == 0) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("nom", nom);
+            state = db.insert("objet_depenses", null, contentValues);
+        } else {
+            state = 409;
+        }
+
         return state;
     }
 

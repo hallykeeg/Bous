@@ -20,7 +20,6 @@ import static android.widget.Toast.LENGTH_SHORT;
  */
 public class FragmentAjoutSourceRevenus extends Fragment {
     EditText editTextSource;
-    DatabaseManager databaseManager;
     Button annulerBtn, sauverBtn;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -97,9 +96,10 @@ public class FragmentAjoutSourceRevenus extends Fragment {
 
     public void sauver() {
         if (FieldValidator.getFieldValidor().estRempli(editTextSource)) {
-            databaseManager = new DatabaseManager(getContext());
+
             String source = editTextSource.getText().toString().toUpperCase();
-            long resultat = databaseManager.insertSourceRevenus(source);
+            long resultat = DatabaseManager.getDatabaseManager(getContext()).insertSourceRevenus(source);
+            //Verification de l'insertion
             if (resultat == 409) {
                 //duplicate
                 String message = source + " existe deja!";

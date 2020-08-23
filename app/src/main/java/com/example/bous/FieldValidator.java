@@ -15,7 +15,7 @@ public final class FieldValidator {
         super();
     }
 
-    public static FieldValidator getFieldValidor() {
+    public static synchronized FieldValidator getFieldValidor() {
         if (fv == null) {
             fv = new FieldValidator();
         }
