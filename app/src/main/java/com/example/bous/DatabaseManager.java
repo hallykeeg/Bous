@@ -75,9 +75,19 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public long insertSourceRevenus(String nom) {
         long state;
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("nom", nom);
-        state = db.insert("source_revenus", null, cv);
+        String sql = "SELECT COUNT(id_source_revenus) AS card FROM source_revenus WHERE nom =? ";
+        String[] params = new String[]{nom};
+        final Cursor cursor = db.rawQuery(sql, params);
+        cursor.moveToFirst();
+        int card = cursor.getInt(cursor.getColumnIndex("card"));
+        if (card == 0) {
+            ContentValues cv = new ContentValues();
+            cv.put("nom", nom);
+            state = db.insert("source_revenus", null, cv);
+        } else {
+            state = 409;
+        }
+
         return state;
     }
 

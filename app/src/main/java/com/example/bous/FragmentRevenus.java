@@ -83,7 +83,7 @@ public class FragmentRevenus extends Fragment {
         fabObjet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new sourceRevenuFragment()).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentAjoutSourceRevenus()).commit();
             }
         });
         return view;
