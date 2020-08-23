@@ -102,10 +102,7 @@ public class FragmentAjoutSourceRevenus extends Fragment {
             //Verification de l'insertion
             if (resultat == 409) {
                 //duplicate
-                String message = source + " existe deja!";
-                Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
-                toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
-                toast.show();
+                editTextSource.setError("Cet objet existe deja");
 
             } else if (resultat != -1) {
                 //insertion reussie

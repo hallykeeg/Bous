@@ -79,7 +79,7 @@ public class FragmentAjoutObjetDepenses extends Fragment {
         sauverBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                annuler();
+                sauver();
             }
         });
         return view;
@@ -100,10 +100,7 @@ public class FragmentAjoutObjetDepenses extends Fragment {
             //Verification de l'insertion
             if (result == 409) {
                 //duplicate
-                String message = source + " existe deja!";
-                Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
-                toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
-                toast.show();
+                editTextObjet.setError("Cet objet existe deja");
 
             } else if (result != -1) {
                 //insertion reussie

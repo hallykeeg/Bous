@@ -83,7 +83,7 @@ public class FragmentDepense extends Fragment {
         fabObjet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ObjetDepenseFragment()).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentAjoutObjetDepenses()).commit();
             }
         });
         return view;
