@@ -3,14 +3,18 @@ package com.example.bous;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -20,7 +24,9 @@ import java.util.Calendar;
  */
 public class FragmentAjoutCreances extends Fragment {
     DatePickerDialog picker;
-    EditText editTextDate;
+    EditText editTextDate, editTextMontant, editTextIndividu;
+    Button buttonSauver, buttonAnnuler;
+    ArrayList<EditText> arrayListEditText;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -66,7 +72,32 @@ public class FragmentAjoutCreances extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_ajout_creances, container, false);
+        //recuperation des composants graphiques
         editTextDate = view.findViewById(R.id.editTextDate);
+        editTextIndividu = view.findViewById(R.id.editTextIndividu);
+        editTextMontant = view.findViewById(R.id.editTextMontant);
+
+        //ajouter les champs pr verifier s ils sont remplis
+        arrayListEditText = new ArrayList<>();
+        arrayListEditText.add(editTextDate);
+        arrayListEditText.add(editTextIndividu);
+        arrayListEditText.add(editTextMontant);
+
+        buttonAnnuler = view.findViewById(R.id.annuler_creance_btn);
+        buttonSauver = view.findViewById(R.id.sauver_btn_creance);
+        //listeners
+        buttonSauver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sauver();
+            }
+        });
+        buttonAnnuler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                annuler();
+            }
+        });
         editTextDate.setInputType(InputType.TYPE_NULL);
         editTextDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,5 +131,41 @@ public class FragmentAjoutCreances extends Fragment {
             }
         });
         return view;
+    }
+
+    public void sauver() {
+        String date, individu;
+        float montant;
+        if (FieldValidator.getFieldValidor().estRempli(arrayListEditText)) {
+            //tous les champs sont remplis
+            date = editTextDate.getText().toString();
+            individu = editTextIndividu.getText().toString();
+            montant = Float.parseFloat(editTextMontant.getText().toString());
+            long resultat;
+            resultat = DatabaseManager.getDatabaseManager(getContext()).insertCreances(new Creances(date, individu, montant));
+            if (resultat != -1) {
+                //insertion reussie
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentCreances()).commit();
+                String message = "CREANCE ENREGISTREE";
+                Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
+                toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
+                toast.show();
+            } else {
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentCreances()).commit();
+                String message = "ERREUR LORS DE L'ENREGISTREMENT";
+                Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
+                toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
+                toast.show();
+            }
+        }
+
+    }
+
+    public void annuler() {
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentCreances()).commit();
+        String message = "ANULLATION";
+        Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
+        toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
+        toast.show();
     }
 }

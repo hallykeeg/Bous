@@ -5,9 +5,9 @@ public class Creances {
     private String individu;
     private Float montant;
     private String dateRemboursement;
-    private String operation = "IN";
+
     private int id;
-    //Quand operation = OUT : remboursement
+    //Quand date_remboursement is not null: remboursement
 
 
     public Creances(String date, String individu, Float montant, String dateRemboursement, String operation) {
@@ -16,7 +16,13 @@ public class Creances {
         this.montant = montant;
         this.dateRemboursement = dateRemboursement;
 
-        this.operation = operation;
+
+    }
+
+    public Creances(String date, String individu, Float montant) {
+        this.date = date;
+        this.individu = individu;
+        this.montant = montant;
     }
 
     public Creances(int id, String date, String individu, Float montant) {
@@ -68,11 +74,4 @@ public class Creances {
     }
 
 
-    public String getOperation() {
-        return operation;
-    }
-
-    public void setOperation(String operation) {
-        this.operation = operation;
-    }
 }

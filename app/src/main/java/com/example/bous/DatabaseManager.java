@@ -261,7 +261,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     Pour trouver la balance: Somme(Revenus.montant)-Somme(revenus.epargne_montant)+somme(epargne.montant where operation=out)-somme(depenses.montant)
      */
     public float getBalanceCourante() {
-        float balance, sommeRevenus, sommeEpargne, sommeEpargneVersRevenus, sommeDepenses;
+        float balance, sommeRevenus, sommeEpargne, sommeEpargneVersRevenus, sommeDepenses, sommeCreancesOut, sommeCreancesIn, sommeDettesOut, sommeDettesIn;
         SQLiteDatabase database = this.getReadableDatabase();
         //Somme revenus
         String sql = "SELECT SUM(montant) AS somme FROM revenus";
@@ -293,7 +293,34 @@ public class DatabaseManager extends SQLiteOpenHelper {
         cursor4.moveToFirst();
         sommeDepenses = cursor4.getFloat(cursor4.getColumnIndex("montant"));
         cursor4.close();
-        balance = sommeRevenus - sommeEpargne + sommeEpargneVersRevenus - sommeDepenses;
+        //somme creance OUT-> sortie d;argent
+        String requeteCreance = "SELECT SUM(montant) as montant FROM creances WHERE date_remboursement IS NULL";
+        Cursor cursorCreanceOut = database.rawQuery(requeteCreance, null);
+        cursorCreanceOut.moveToFirst();
+        sommeCreancesOut = cursorCreanceOut.getFloat(cursorCreanceOut.getColumnIndex("montant"));
+        cursorCreanceOut.close();
+
+        //somme creance IN->Rentree d'argent
+
+        requeteCreance = "SELECT SUM(montant) as montant FROM creances WHERE date_remboursement IS NOT NULL";
+        Cursor cursorCreanceIn = database.rawQuery(requeteCreance, null);
+        cursorCreanceIn.moveToFirst();
+        sommeCreancesIn = cursorCreanceIn.getFloat(cursorCreanceIn.getColumnIndex("montant"));
+        cursorCreanceIn.close();
+
+        //somme dette OUT: sortie d'argent(m peye det mwen)
+        String requeteDettes = "SELECT SUM(montant) AS montant FROM dettes WHERE date_remboursement IS NOT NULL";
+        Cursor cursorDettesOut = database.rawQuery(requeteDettes, null);
+        sommeDettesOut = cursorDettesOut.getFloat(cursorDettesOut.getColumnIndex("montant"));
+        cursorDettesOut.close();
+
+        //somme dette IN:rentree d'argent (kob m prete)
+        requeteDettes = "SELECT SUM(montant) AS montant FROM dettes WHERE date_remboursement IS NULL";
+        Cursor cursorDettesIn = database.rawQuery(requeteDettes, null);
+        sommeDettesIn = cursorDettesIn.getFloat(cursorDettesIn.getColumnIndex("montant"));
+        cursorDettesIn.close();
+
+        balance = sommeRevenus - sommeEpargne + sommeEpargneVersRevenus - sommeDepenses + sommeDettesIn - sommeDettesOut + sommeCreancesIn - sommeCreancesOut;
         if (balance < 0) {
             balance = 0;
         }
