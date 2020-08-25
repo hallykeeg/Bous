@@ -4,15 +4,27 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import androidx.fragment.app.Fragment;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FragmentAjoutRevenus#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentAjoutRevenus extends Fragment {
+public class FragmentAjoutRevenus extends Fragment implements AdapterView.OnItemSelectedListener {
+    ArrayList<SourceRevenus> arrayListSourceRevenus;
+    ArrayList<String> arrayNoms = new ArrayList<>();
+    //ArrayList<Integer> arrayId = new ArrayList<>();
+    Spinner spinner;
+    ArrayAdapter arrayAdapter;
+    SourceRevenus sourceRevenusItem;
+    long idSelected;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,6 +70,30 @@ public class FragmentAjoutRevenus extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ajout_revenus, container, false);
+        View view = inflater.inflate(R.layout.fragment_ajout_revenus, container, false);
+        spinner = view.findViewById(R.id.spinner_sourceRevenus);
+        arrayListSourceRevenus = DatabaseManager.getDatabaseManager(getContext()).selectSourceRevenus();
+        for (int i = 0; i < arrayListSourceRevenus.size(); i++) {
+            arrayNoms.add(arrayListSourceRevenus.get(i).getId(), arrayListSourceRevenus.get(i).getNom());
+        }
+        spinner.setOnItemSelectedListener(this);
+        arrayAdapter = new ArrayAdapter(getContext(), R.layout.support_simple_spinner_dropdown_item, arrayNoms);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+
+        return view;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        idSelected = id;
+        System.out.println(id);
+        System.out.println(position);
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

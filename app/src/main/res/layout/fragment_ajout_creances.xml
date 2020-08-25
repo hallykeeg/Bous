@@ -35,6 +35,7 @@
                 android:layout_below="@+id/title"
                 android:layout_centerHorizontal="true"
                 android:ems="15"
+                android:focusedByDefault="true"
                 android:gravity="center"
                 android:hint="22/09/2020" />
 

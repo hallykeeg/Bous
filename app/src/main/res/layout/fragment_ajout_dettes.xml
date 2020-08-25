@@ -6,9 +6,95 @@
     tools:context=".FragmentAjoutDettes">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical"
+        android:layout_margin="5dp">
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="10dp"
+                android:id="@+id/title"
+                android:text="Ajouter une dette"
+                android:textStyle="bold"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/editTextDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:focusedByDefault="true"
+                android:layout_below="@+id/title"
+                android:layout_centerHorizontal="true"
+                android:ems="15"
+                android:gravity="center"
+                android:hint="22/09/2020" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_margin="10dp"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/editTextMontant"
+                android:inputType="numberDecimal"
+                android:hint="Montant"
+                android:layout_below="@+id/editTextDate" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_margin="10dp"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/editTextIndividu"
+                android:inputType="textCapCharacters"
+                android:hint="Individu concerne"
+                android:layout_below="@+id/editTextMontant" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="10dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_below="@id/editTextIndividu">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:id="@+id/annuler_dettes_btn"
+                    android:text="Annuler"
+                    android:gravity="center"
+                    android:textColor="#ffffff"
+                    android:background="@color/colorPrimaryDark" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:id="@+id/sauver_dettes_btn"
+                    android:text="Sauver"
+                    android:gravity="center"
+                    android:textColor="#ffffff"
+                    android:background="@color/colorPrimaryDark" />
+
+            </LinearLayout>
+        </RelativeLayout>
+
+
+    </LinearLayout>
 
 </FrameLayout>

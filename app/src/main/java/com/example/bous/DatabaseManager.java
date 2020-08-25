@@ -351,4 +351,40 @@ public class DatabaseManager extends SQLiteOpenHelper {
         cursor2.close();
         return solde;
     }
+
+    //Selectionner les objets de depenses
+    public ArrayList<ObjetDepenses> selectObjetDepenses() {
+        ArrayList<ObjetDepenses> arrayList = new ArrayList<>();
+        int id;
+        String nom;
+        SQLiteDatabase database = this.getReadableDatabase();
+        String requeteObjetDepenses = "SELECT id_objet_depenses AS id, nom FROM objet_depenses ORDER BY nom";
+        Cursor cursorObjetDepenses = database.rawQuery(requeteObjetDepenses, null);
+        while (cursorObjetDepenses.moveToNext()) {
+            id = cursorObjetDepenses.getInt(cursorObjetDepenses.getColumnIndex("id"));
+            nom = cursorObjetDepenses.getString(cursorObjetDepenses.getColumnIndex("nom"));
+            ObjetDepenses objetDepenses = new ObjetDepenses(id, nom);
+            arrayList.add(objetDepenses);
+        }
+        cursorObjetDepenses.close();
+        return arrayList;
+    }
+
+    //selection des sources de revenus
+    public ArrayList<SourceRevenus> selectSourceRevenus() {
+        ArrayList<SourceRevenus> arrayList = new ArrayList<>();
+        int id;
+        String nom;
+        SQLiteDatabase database = this.getReadableDatabase();
+        String requeteSourceRevenus = "SELECT id_source_revenus AS id,nom FROM source_revenus ORDER BY nom";
+        Cursor cursorSourceRevenus = database.rawQuery(requeteSourceRevenus, null);
+        while (cursorSourceRevenus.moveToNext()) {
+            id = cursorSourceRevenus.getInt(cursorSourceRevenus.getColumnIndex("id"));
+            nom = cursorSourceRevenus.getString(cursorSourceRevenus.getColumnIndex("nom"));
+            SourceRevenus sourceRevenus = new SourceRevenus(id, nom);
+            arrayList.add(sourceRevenus);
+        }
+        cursorSourceRevenus.close();
+        return arrayList;
+    }
 }
