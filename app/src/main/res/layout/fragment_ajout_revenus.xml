@@ -60,17 +60,17 @@
                 android:layout_centerHorizontal="true"
                 android:id="@+id/editTextMontantEpargne"
                 android:inputType="numberDecimal"
-                android:hint="Montant"
+                android:hint="Epargne"
                 android:layout_below="@+id/editTextMontant" />
 
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:textAlignment="center"
                 android:layout_margin="10dp"
-                android:layout_centerHorizontal="true"
                 android:layout_below="@+id/editTextMontantEpargne"
-                android:id="@+id/spinner_sourceRevenus" />
+                android:id="@+id/spinner_sourceRevenus"
+                android:layout_gravity="center_horizontal" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -86,7 +86,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:id="@+id/annuler_dettes_btn"
+                    android:id="@+id/annuler_revenus_btn"
                     android:text="Annuler"
                     android:gravity="center"
                     android:textColor="#ffffff"
@@ -96,7 +96,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:id="@+id/sauver_dettes_btn"
+                    android:id="@+id/sauver_revenus_btn"
                     android:text="Sauver"
                     android:gravity="center"
                     android:textColor="#ffffff"

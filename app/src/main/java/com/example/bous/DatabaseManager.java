@@ -231,10 +231,10 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return arrayList;
     }
 
-    public ArrayList<Revenus> selectRevenus(String debut, String fin) {
+    public ArrayList<CustomModel> selectRevenusByMonth(String debut, String fin) {
         SQLiteDatabase db = this.getReadableDatabase();
-        ArrayList<Revenus> arrayList = new ArrayList<>();
-        Revenus revenus;
+        ArrayList<CustomModel> arrayList = new ArrayList<>();
+
         int id, id_source;
         float montant;
         float epargneMontant;
@@ -245,11 +245,17 @@ public class DatabaseManager extends SQLiteOpenHelper {
         while (cursor.moveToNext()) {
             id = cursor.getInt(cursor.getColumnIndex("id"));
             date = cursor.getString(cursor.getColumnIndex("date"));
-            epargneMontant = cursor.getFloat(cursor.getColumnIndex("epargne_montant"));
             montant = cursor.getFloat(cursor.getColumnIndex("montant"));
             id_source = cursor.getInt(cursor.getColumnIndex("id_source_revenus"));
-            revenus = new Revenus(date, montant, id_source, epargneMontant, id);
-            arrayList.add(revenus);
+            //trouver le nom associe a l'id
+            String requete = "SELECT nom FROM source_revenus WHERE id_source_revenus=?";
+            String[] clef = new String[]{String.valueOf(id)};
+            Cursor cursorFindSource = db.rawQuery(requete, clef);
+            cursorFindSource.moveToFirst();
+            String source = cursorFindSource.getString(cursorFindSource.getColumnIndex("nom"));
+            cursorFindSource.close();
+
+            arrayList.add(new CustomModel(id, date, source, montant));
 
         }
         cursor.close();
@@ -386,5 +392,27 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
         cursorSourceRevenus.close();
         return arrayList;
+    }
+
+    public String selectObjetDepenseById(String id) {
+        SQLiteDatabase database = this.getReadableDatabase();
+        String requete = "SELECT nom FROM objet_depenses WHERE id_objet_depenses=?";
+        String[] params = new String[]{id};
+        Cursor cursor = database.rawQuery(requete, params);
+        cursor.moveToFirst();
+        String nom = cursor.getString(cursor.getColumnIndex("nom"));
+        cursor.close();
+        return nom;
+    }
+
+    public String selectSourceRevenusById(String id) {
+        SQLiteDatabase database = this.getReadableDatabase();
+        String requete = "SELECT nom FROM source_revenus WHERE id_source_revenus=?";
+        String[] params = new String[]{id};
+        Cursor cursor = database.rawQuery(requete, params);
+        cursor.moveToFirst();
+        String nom = cursor.getString(cursor.getColumnIndex("nom"));
+        cursor.close();
+        return nom;
     }
 }

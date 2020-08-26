@@ -70,7 +70,7 @@ public class FragmentDepense extends Fragment {
 
         listView = view.findViewById(R.id.listviewDepenses);
         arrayList = new ArrayList<>();
-        arrayList.add(new CustomModel("22 Janvier 2020", "DEJEUNER", 250));
+
         customAdapter = new CustomAdapter(getContext(), R.layout.custom_listview, arrayList);
         listView.setAdapter(customAdapter);
         fabNouveau.setOnClickListener(new View.OnClickListener() {

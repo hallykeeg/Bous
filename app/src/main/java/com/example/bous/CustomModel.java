@@ -3,11 +3,21 @@ package com.example.bous;
 public class CustomModel {
     private String date, objet;
     private float montant;
+    int id;
 
-    public CustomModel(String date, String objet, float montant) {
+    public CustomModel(int id, String date, String objet, float montant) {
         this.date = date;
         this.objet = objet;
         this.montant = montant;
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getDate() {

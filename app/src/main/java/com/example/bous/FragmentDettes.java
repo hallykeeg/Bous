@@ -68,7 +68,7 @@ public class FragmentDettes extends Fragment {
         fab = view.findViewById(R.id.ajout_dettes);
         listView = view.findViewById(R.id.listviewDettes);
         arrayList = new ArrayList<>();
-        arrayList.add(new CustomModel("22 Janvier 2020", "Sergio S. OSSON ", 250));
+
         customAdapter = new CustomAdapter(getContext(), R.layout.custom_listview, arrayList);
         listView.setAdapter(customAdapter);
 

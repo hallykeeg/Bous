@@ -1,16 +1,26 @@
 package com.example.bous;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.text.InputType;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,13 +28,18 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class FragmentAjoutRevenus extends Fragment implements AdapterView.OnItemSelectedListener {
-    ArrayList<SourceRevenus> arrayListSourceRevenus;
-    ArrayList<String> arrayNoms = new ArrayList<>();
+    private ArrayList<SourceRevenus> arrayListSourceRevenus;
+    private DatePickerDialog picker;
+    private ArrayList<String> arrayNoms = new ArrayList<>();
     //ArrayList<Integer> arrayId = new ArrayList<>();
-    Spinner spinner;
-    ArrayAdapter arrayAdapter;
-    SourceRevenus sourceRevenusItem;
-    long idSelected;
+    private Spinner spinner;
+    private Map<Integer, String> mapSourceById = new HashMap<>();
+    private ArrayAdapter arrayAdapter;
+    private SourceRevenus sourceRevenusItem;
+    private String selectedItem;
+    private EditText editTextDate, editTextMontant, getEditTextMontantEpargne;
+    private Button buttonSauver, buttonAnnuler;
+    private ArrayList<EditText> arrayListEditText;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -72,10 +87,74 @@ public class FragmentAjoutRevenus extends Fragment implements AdapterView.OnItem
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_ajout_revenus, container, false);
         spinner = view.findViewById(R.id.spinner_sourceRevenus);
+        buttonAnnuler = view.findViewById(R.id.annuler_revenus_btn);
+        buttonSauver = view.findViewById(R.id.sauver_revenus_btn);
+
+        buttonSauver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sauver();
+            }
+        });
+        buttonAnnuler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                annuler();
+            }
+        });
+        editTextDate = view.findViewById(R.id.editTextDate);
+        editTextMontant = view.findViewById(R.id.editTextMontant);
+        getEditTextMontantEpargne = view.findViewById(R.id.editTextMontantEpargne);
+        //Afin de Tester s ils sont remplis
+        arrayListEditText = new ArrayList<>();
+        arrayListEditText.add(editTextDate);
+        arrayListEditText.add(editTextMontant);
+        arrayListEditText.add(getEditTextMontantEpargne);
+        //date selection
+        editTextDate.setInputType(InputType.TYPE_NULL);
+        editTextDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+                // date picker dialog
+                picker = new DatePickerDialog(getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                String tmpJour, tmpMois, date;
+                                int day, month = monthOfYear + 1;
+                                if (dayOfMonth < 10) {
+                                    tmpJour = "0" + String.valueOf(dayOfMonth);
+                                } else {
+                                    tmpJour = String.valueOf(dayOfMonth);
+                                }
+                                if (month < 10) {
+                                    tmpMois = "0" + String.valueOf(month);
+                                } else {
+                                    tmpMois = String.valueOf(month);
+                                }
+
+                                date = String.valueOf(year) + "-" + tmpMois + "-" + tmpJour;
+                                editTextDate.setText(date);
+                            }
+                        }, year, month, day);
+                picker.show();
+            }
+        });
+
         arrayListSourceRevenus = DatabaseManager.getDatabaseManager(getContext()).selectSourceRevenus();
-        for (int i = 0; i < arrayListSourceRevenus.size(); i++) {
-            arrayNoms.add(arrayListSourceRevenus.get(i).getId(), arrayListSourceRevenus.get(i).getNom());
+        //on met les noms et id ds un tableau
+
+        for (SourceRevenus s : arrayListSourceRevenus
+        ) {
+            mapSourceById.put(s.getId(), s.getNom());
+            arrayNoms.add(s.getNom());
+
         }
+
         spinner.setOnItemSelectedListener(this);
         arrayAdapter = new ArrayAdapter(getContext(), R.layout.support_simple_spinner_dropdown_item, arrayNoms);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -86,14 +165,72 @@ public class FragmentAjoutRevenus extends Fragment implements AdapterView.OnItem
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        idSelected = id;
-        System.out.println(id);
-        System.out.println(position);
+        selectedItem = spinner.getSelectedItem().toString();
 
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    public void sauver() {
+        if (FieldValidator.getFieldValidor().estRempli(arrayListEditText)) {
+            //tous les champs sont remplis
+            String date;
+            float montant, montantEpargne;
+            int idSourceSelected = getKeyByValue(mapSourceById, selectedItem);
+            if (idSourceSelected != 409) {
+                //on a trouve une seule cle pour la valeur
+                montant = Float.parseFloat(editTextMontant.getText().toString());
+                montantEpargne = Float.parseFloat(getEditTextMontantEpargne.getText().toString());
+                date = editTextDate.getText().toString();
+                Revenus revenus = new Revenus(date, montant, montantEpargne, idSourceSelected);
+                long resultat = DatabaseManager.getDatabaseManager(getContext()).insertRevenus(revenus);
+                if (resultat != -1) {
+                    //insertion reussie
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentRevenus()).commit();
+                    String message = "REVENU ENREGISTRE";
+                    Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
+                    toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
+                    toast.show();
+                } else {
+                    String message = "ECHEC D'ENREGISTREMENT";
+                    Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
+                    toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
+                    toast.show();
+                }
+            } else {
+                //plusieurs clef pour la valeur
+                String message = "Erreur";
+                Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
+                toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
+                toast.show();
+            }
+
+        }
+    }
+
+    public void annuler() {
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentRevenus()).commit();
+        String message = "ANNULATION";
+        Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
+        toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
+        toast.show();
+    }
+
+    public int getKeyByValue(Map<Integer, String> hashMap, String value) {
+        int key, compteur = 0;
+        for (Map.Entry<Integer, String> set : hashMap.entrySet()) {
+            if (set.getValue() == value) {
+                key = set.getKey();
+                compteur++;
+            }
+        }
+        if (compteur == 1) {
+            return compteur;
+        } else {
+            return 409;
+        }
     }
 }

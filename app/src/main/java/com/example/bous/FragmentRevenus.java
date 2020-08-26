@@ -9,6 +9,7 @@ import android.widget.ListView;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -68,8 +69,10 @@ public class FragmentRevenus extends Fragment {
         fabNouveau = view.findViewById(R.id.revenus);
         fabObjet = view.findViewById(R.id.source);
         listView = view.findViewById(R.id.listviewRevenus);
-        arrayList = new ArrayList<>();
-        arrayList.add(new CustomModel("22 Janvier 2020", "UTEST", 250));
+        Date dt = new Date();
+
+        arrayList = DatabaseManager.getDatabaseManager(getContext()).selectRevenusByMonth(DaysOfMonth.getFirstDay(dt), DaysOfMonth.getLastDay(dt));
+
         customAdapter = new CustomAdapter(getContext(), R.layout.custom_listview, arrayList);
         listView.setAdapter(customAdapter);
 
