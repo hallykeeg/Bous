@@ -3,7 +3,6 @@ package com.example.bous;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.InputType;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -190,22 +188,14 @@ public class FragmentAjoutRevenus extends Fragment implements AdapterView.OnItem
                 if (resultat != -1) {
                     //insertion reussie
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentRevenus()).commit();
-                    String message = "REVENU ENREGISTRE";
-                    Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
-                    toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
-                    toast.show();
+                    Screen.display("REVENU ENREGISTRE", getContext());
                 } else {
-                    String message = "ECHEC D'ENREGISTREMENT";
-                    Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
-                    toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
-                    toast.show();
+
+                    Screen.display("ECHEC D'ENREGISTREMENT", getContext());
                 }
             } else {
                 //plusieurs clef pour la valeur
-                String message = "Erreur";
-                Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
-                toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
-                toast.show();
+                Screen.display("ERREUR", getContext());
             }
 
         }
@@ -213,14 +203,11 @@ public class FragmentAjoutRevenus extends Fragment implements AdapterView.OnItem
 
     public void annuler() {
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentRevenus()).commit();
-        String message = "ANNULATION";
-        Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
-        toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
-        toast.show();
+        Screen.display("ANNULATION", getContext());
     }
 
     public int getKeyByValue(Map<Integer, String> hashMap, String value) {
-        int key, compteur = 0;
+        int key = 0, compteur = 0;
         for (Map.Entry<Integer, String> set : hashMap.entrySet()) {
             if (set.getValue() == value) {
                 key = set.getKey();
@@ -228,7 +215,7 @@ public class FragmentAjoutRevenus extends Fragment implements AdapterView.OnItem
             }
         }
         if (compteur == 1) {
-            return compteur;
+            return key;
         } else {
             return 409;
         }

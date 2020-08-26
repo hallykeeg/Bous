@@ -1,11 +1,20 @@
 package com.example.bous;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 import androidx.fragment.app.Fragment;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -13,7 +22,18 @@ import androidx.fragment.app.Fragment;
  * create an instance of this fragment.
  */
 public class FragmentAjoutDepenses extends Fragment {
-
+    private ArrayList<ObjetDepenses> arrayListObjetDepenses;
+    private DatePickerDialog picker;
+    private ArrayList<String> arrayNoms = new ArrayList<>();
+    //ArrayList<Integer> arrayId = new ArrayList<>();
+    private Spinner spinner;
+    private Map<Integer, String> mapObjectById = new HashMap<>();
+    private ArrayAdapter arrayAdapter;
+    private ObjetDepenses objetDepenses;
+    private String selectedItem;
+    private EditText editTextDate, editTextMontant,;
+    private Button buttonSauver, buttonAnnuler;
+    private ArrayList<EditText> arrayListEditText;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";

@@ -1,17 +1,13 @@
 package com.example.bous;
 
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
-
-import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -88,10 +84,7 @@ public class FragmentAjoutSourceRevenus extends Fragment {
 
     public void annuler() {
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentRevenus()).commit();
-        String message = "Insertion annulee";
-        Toast toast = Toast.makeText(getContext(), message, LENGTH_SHORT);
-        toast.setGravity((Gravity.BOTTOM | Gravity.CENTER_VERTICAL), 1, 5);
-        toast.show();
+        Screen.display("INSERTION ANNULEE", getContext());
     }
 
     public void sauver() {
@@ -108,16 +101,11 @@ public class FragmentAjoutSourceRevenus extends Fragment {
                 //insertion reussie
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentRevenus()).commit();
                 String message = source + " a ete enregistre avec succes!";
-                Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
-                toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
-                toast.show();
+                Screen.display(message, getContext());
                 editTextSource.setText("");
             } else {
                 //insertion echouee
-                String message = "echec lors de l'enregistrement!";
-                Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
-                toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
-                toast.show();
+                Screen.display("ECHEC LORS DE L'ENREGISTREMENT", getContext());
                 editTextSource.setText("");
             }
         }

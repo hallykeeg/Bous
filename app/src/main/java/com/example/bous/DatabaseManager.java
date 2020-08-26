@@ -240,16 +240,16 @@ public class DatabaseManager extends SQLiteOpenHelper {
         float epargneMontant;
         String date;
         String[] params = new String[]{debut, fin};
-        String sql = "SELECT * FROM revenus WHERE date BETWEEN ? AND ?";
+        String sql = "SELECT * FROM revenus WHERE date BETWEEN ? AND ? ORDER BY date DESC";
         final Cursor cursor = db.rawQuery(sql, params);
         while (cursor.moveToNext()) {
             id = cursor.getInt(cursor.getColumnIndex("id"));
             date = cursor.getString(cursor.getColumnIndex("date"));
             montant = cursor.getFloat(cursor.getColumnIndex("montant"));
             id_source = cursor.getInt(cursor.getColumnIndex("id_source_revenus"));
-            //trouver le nom associe a l'id
+            //trouver le nom associe a l'id_source
             String requete = "SELECT nom FROM source_revenus WHERE id_source_revenus=?";
-            String[] clef = new String[]{String.valueOf(id)};
+            String[] clef = new String[]{String.valueOf(id_source)};
             Cursor cursorFindSource = db.rawQuery(requete, clef);
             cursorFindSource.moveToFirst();
             String source = cursorFindSource.getString(cursorFindSource.getColumnIndex("nom"));

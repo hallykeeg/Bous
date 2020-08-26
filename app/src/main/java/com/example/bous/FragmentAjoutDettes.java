@@ -3,14 +3,12 @@ package com.example.bous;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.InputType;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -148,16 +146,10 @@ public class FragmentAjoutDettes extends Fragment {
             if (resultat != -1) {
                 //insertion reussie
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentDettes()).commit();
-                String message = "DETTE ENREGISTREE";
-                Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
-                toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
-                toast.show();
+                Screen.display("DETTE ENREGISTREE", getContext());
             } else {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentCreances()).commit();
-                String message = "ERREUR LORS DE L'ENREGISTREMENT";
-                Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
-                toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
-                toast.show();
+                Screen.display("ERREUR LORS DE L'ENREGISTREMENT", getContext());
             }
         }
 
@@ -165,10 +157,7 @@ public class FragmentAjoutDettes extends Fragment {
 
     public void annuler() {
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentDettes()).commit();
-        String message = "ANULLATION";
-        Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
-        toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
-        toast.show();
+        Screen.display("ANNULATION", getContext());
     }
 
 }
