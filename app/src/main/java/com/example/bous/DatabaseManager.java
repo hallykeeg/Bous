@@ -186,49 +186,44 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     //Fonction qui retourne un arraylist d'objets dettes
-    public ArrayList<Dettes> selectDettesByMonth(String debut, String fin) {
+    public ArrayList<CustomModel> selectDettes() {
         SQLiteDatabase db = this.getReadableDatabase();
-        ArrayList<Dettes> arrayList = new ArrayList<>();
-        Dettes d;
+        ArrayList<CustomModel> arrayList = new ArrayList<>();
         int id;
         String date, individu;
         float montant;
-        String[] params = new String[]{debut, fin};
-        String sql = "SELECT * FROM dettes WHERE date_remboursement IS NULL AND date BETWEEN ? AND ?";
-        final Cursor cursor = db.rawQuery(sql, params);
+        String sql = "SELECT * FROM dettes WHERE date_remboursement IS NULL ORDER BY date DESC";
+        final Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {
             id = cursor.getInt(cursor.getColumnIndex("id"));
             date = cursor.getString(cursor.getColumnIndex("date"));
             individu = cursor.getString(cursor.getColumnIndex("individu"));
             montant = cursor.getFloat(cursor.getColumnIndex("montant"));
-            d = new Dettes(id, date, individu, montant);
-            arrayList.add(d);
+            arrayList.add(new CustomModel(id, date, individu, montant));
         }
         cursor.close();
         return arrayList;
 
     }
 
-    public ArrayList<Creances> selectCreancesByMonth(String debut, String fin) {
+    public ArrayList<CustomModel> selectCreances() {
         SQLiteDatabase db = this.getReadableDatabase();
-        ArrayList<Creances> arrayList = new ArrayList<>();
-        Creances c;
+        ArrayList<CustomModel> arrayListCustom = new ArrayList<>();
         int id;
         String date, individu;
         float montant;
-        String[] params = new String[]{debut, fin};
-        String sql = "SELECT * FROM creances WHERE date_remboursement IS NULL AND date BETWEEN ? AND ?";
-        final Cursor cursor = db.rawQuery(sql, params);
+
+        String sql = "SELECT * FROM creances WHERE date_remboursement IS NULL ORDER BY date DESC";
+        final Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {
             id = cursor.getInt(cursor.getColumnIndex("id"));
             date = cursor.getString(cursor.getColumnIndex("date"));
             individu = cursor.getString(cursor.getColumnIndex("individu"));
             montant = cursor.getFloat(cursor.getColumnIndex("montant"));
-            c = new Creances(id, date, individu, montant);
-            arrayList.add(c);
+            arrayListCustom.add(new CustomModel(id, date, individu, montant));
         }
         cursor.close();
-        return arrayList;
+        return arrayListCustom;
     }
 
     public ArrayList<CustomModel> selectRevenusByMonth(String debut, String fin) {
@@ -262,6 +257,33 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return arrayList;
     }
 
+    public ArrayList<CustomModel> selectDepensesByMonth(String debut, String fin) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<CustomModel> arrayList = new ArrayList<>();
+        int id, id_objet;
+        float montant;
+        String date;
+        String[] params = new String[]{debut, fin};
+        String sql = "SELECT * FROM depenses WHERE date BETWEEN ? AND ? ORDER BY date DESC";
+        final Cursor cursor = db.rawQuery(sql, params);
+        while (cursor.moveToNext()) {
+            id = cursor.getInt(cursor.getColumnIndex("id"));
+            date = cursor.getString(cursor.getColumnIndex("date"));
+            montant = cursor.getFloat(cursor.getColumnIndex("montant"));
+            id_objet = cursor.getInt(cursor.getColumnIndex("id_objet_depenses"));
+            //trouver le nom associe a l'id
+            String requete = "SELECT nom FROM objet_depenses WHERE id_objet_depenses=?";
+            String[] clef = new String[]{String.valueOf(id_objet)};
+            Cursor cursorFindObject = db.rawQuery(requete, clef);
+            cursorFindObject.moveToFirst();
+            String objetDepenses = cursorFindObject.getString(cursorFindObject.getColumnIndex("nom"));
+            cursorFindObject.close();
+            arrayList.add(new CustomModel(id, date, objetDepenses, montant));
+        }
+        cursor.close();
+        return arrayList;
+    }
+
     /*--!
 
     Pour trouver la balance: Somme(Revenus.montant)-Somme(revenus.epargne_montant)+somme(epargne.montant where operation=out)-somme(depenses.montant)
@@ -286,9 +308,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
         //somme epargne vers revenus(retrait epargne)
 
-        String requete = "SELECT SUM(montant) AS montant FROM epargne WHERE operation=?";
-        String[] param = new String[]{"OUT"};
-        Cursor cursor3 = database.rawQuery(requete, param);
+        String requete = "SELECT SUM(montant) AS montant FROM epargne";
+
+        Cursor cursor3 = database.rawQuery(requete, null);
         cursor3.moveToFirst();
         sommeEpargneVersRevenus = cursor3.getFloat(cursor3.getColumnIndex("montant"));
         cursor3.close();
@@ -335,25 +357,25 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     public float getEpargneSolde() {
         float solde, IN, OUT;
-
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        String req = "SELECT SUM(montant) AS montant FROM epargne WHERE operation=?";
-        String[] params = new String[]{"IN"};
-        Cursor cursor1 = sqLiteDatabase.rawQuery(req, params);
-        cursor1.moveToFirst();
-        IN = cursor1.getFloat(cursor1.getColumnIndex("montant"));
-
-        String requete = "SELECT SUM(montant) AS somme FROM epargne WHERE operation=?";
-        String[] parametres = new String[]{"OUT"};
-        Cursor cursor2 = sqLiteDatabase.rawQuery(requete, parametres);
+        SQLiteDatabase database = this.getReadableDatabase();
+        String req = "SELECT SUM(epargne_montant) as somme_epargne FROM revenus";
+        Cursor cursor2 = database.rawQuery(req, null);
         cursor2.moveToFirst();
-        OUT = cursor2.getFloat(cursor2.getColumnIndex("somme"));
+        IN = cursor2.getFloat(cursor2.getColumnIndex("somme_epargne"));
+        cursor2.close();
+
+
+        String requete = "SELECT SUM(montant) AS somme FROM epargne";
+
+        Cursor cursorOut = database.rawQuery(requete, null);
+        cursor2.moveToFirst();
+        OUT = cursorOut.getFloat(cursorOut.getColumnIndex("somme"));
 
         solde = IN - OUT;
         if (solde < 0) {
             solde = 0;
         }
-        cursor1.close();
+        cursorOut.close();
         cursor2.close();
         return solde;
     }

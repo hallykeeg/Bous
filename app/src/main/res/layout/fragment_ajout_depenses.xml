@@ -60,7 +60,7 @@
                 android:layout_margin="10dp"
                 android:gravity="center_horizontal"
                 android:layout_below="@+id/editTextMontant"
-                android:id="@+id/spinner_sourceRevenus"
+                android:id="@+id/spinner_ObjetDepense"
                 android:layout_gravity="center_horizontal" />
 
             <LinearLayout
@@ -71,13 +71,13 @@
                 android:id="@+id/linear"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:layout_below="@id/spinner_sourceRevenus">
+                android:layout_below="@id/spinner_ObjetDepense">
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:id="@+id/annuler_revenus_btn"
+                    android:id="@+id/annuler_depenses_btn"
                     android:text="Annuler"
                     android:gravity="center"
                     android:textColor="#ffffff"
@@ -87,7 +87,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:id="@+id/sauver_revenus_btn"
+                    android:id="@+id/sauver_depenses_btn"
                     android:text="Sauver"
                     android:gravity="center"
                     android:textColor="#ffffff"

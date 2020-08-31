@@ -35,7 +35,7 @@ public class FragmentAjoutRevenus extends Fragment implements AdapterView.OnItem
     private ArrayAdapter arrayAdapter;
     private SourceRevenus sourceRevenusItem;
     private String selectedItem;
-    private EditText editTextDate, editTextMontant, getEditTextMontantEpargne;
+    private EditText editTextDate, editTextMontant, editTextMontantEpargne;
     private Button buttonSauver, buttonAnnuler;
     private ArrayList<EditText> arrayListEditText;
 
@@ -102,12 +102,12 @@ public class FragmentAjoutRevenus extends Fragment implements AdapterView.OnItem
         });
         editTextDate = view.findViewById(R.id.editTextDate);
         editTextMontant = view.findViewById(R.id.editTextMontant);
-        getEditTextMontantEpargne = view.findViewById(R.id.editTextMontantEpargne);
+        editTextMontantEpargne = view.findViewById(R.id.editTextMontantEpargne);
         //Afin de Tester s ils sont remplis
         arrayListEditText = new ArrayList<>();
         arrayListEditText.add(editTextDate);
         arrayListEditText.add(editTextMontant);
-        arrayListEditText.add(getEditTextMontantEpargne);
+        arrayListEditText.add(editTextMontantEpargne);
         //date selection
         editTextDate.setInputType(InputType.TYPE_NULL);
         editTextDate.setOnClickListener(new View.OnClickListener() {
@@ -125,17 +125,17 @@ public class FragmentAjoutRevenus extends Fragment implements AdapterView.OnItem
                                 String tmpJour, tmpMois, date;
                                 int day, month = monthOfYear + 1;
                                 if (dayOfMonth < 10) {
-                                    tmpJour = "0" + String.valueOf(dayOfMonth);
+                                    tmpJour = "0" + (dayOfMonth);
                                 } else {
                                     tmpJour = String.valueOf(dayOfMonth);
                                 }
                                 if (month < 10) {
-                                    tmpMois = "0" + String.valueOf(month);
+                                    tmpMois = "0" + (month);
                                 } else {
                                     tmpMois = String.valueOf(month);
                                 }
 
-                                date = String.valueOf(year) + "-" + tmpMois + "-" + tmpJour;
+                                date = (year) + "-" + tmpMois + "-" + tmpJour;
                                 editTextDate.setText(date);
                             }
                         }, year, month, day);
@@ -181,7 +181,7 @@ public class FragmentAjoutRevenus extends Fragment implements AdapterView.OnItem
             if (idSourceSelected != 409) {
                 //on a trouve une seule cle pour la valeur
                 montant = Float.parseFloat(editTextMontant.getText().toString());
-                montantEpargne = Float.parseFloat(getEditTextMontantEpargne.getText().toString());
+                montantEpargne = Float.parseFloat(editTextMontantEpargne.getText().toString());
                 date = editTextDate.getText().toString();
                 Revenus revenus = new Revenus(date, montant, montantEpargne, idSourceSelected);
                 long resultat = DatabaseManager.getDatabaseManager(getContext()).insertRevenus(revenus);
@@ -209,7 +209,7 @@ public class FragmentAjoutRevenus extends Fragment implements AdapterView.OnItem
     public int getKeyByValue(Map<Integer, String> hashMap, String value) {
         int key = 0, compteur = 0;
         for (Map.Entry<Integer, String> set : hashMap.entrySet()) {
-            if (set.getValue() == value) {
+            if (set.getValue().equals(value)) {
                 key = set.getKey();
                 compteur++;
             }

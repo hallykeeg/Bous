@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -23,6 +24,7 @@ public class FragmentAccueil extends Fragment {
     Button creancesButton;
     Button statsButton;
     Button epargneButton;
+    TextView textViewBalance, textViewEpargne;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -87,6 +89,11 @@ public class FragmentAccueil extends Fragment {
         dettesButton = (Button) view.findViewById(R.id.dettes_btn);
         creancesButton = (Button) view.findViewById(R.id.creances_btn);
         statsButton = (Button) view.findViewById(R.id.stats_btn);
+        //balance et epargne
+        textViewBalance = view.findViewById(R.id.balance);
+        textViewEpargne = view.findViewById(R.id.epargne);
+//        textViewBalance.setText(String.valueOf(DatabaseManager.getDatabaseManager(getContext()).getBalanceCourante()));
+//        textViewEpargne.setText(String.valueOf(DatabaseManager.getDatabaseManager(getContext()).getEpargneSolde()));
 
         depensesButton.setOnClickListener(new View.OnClickListener() {
             @Override

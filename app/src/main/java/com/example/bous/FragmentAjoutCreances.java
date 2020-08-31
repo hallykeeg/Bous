@@ -121,7 +121,8 @@ public class FragmentAjoutCreances extends Fragment {
                                 } else {
                                     tmpMois = String.valueOf(month);
                                 }
-                                date = tmpJour + "-" + tmpMois + "-" + String.valueOf(year);
+
+                                date = String.valueOf(year) + "-" + tmpMois + "-" + tmpJour;
                                 editTextDate.setText(date);
                             }
                         }, year, month, day);

@@ -29,7 +29,7 @@
             android:id="@+id/editTextObjet"
             android:gravity="center"
             android:layout_margin="20dp"
-            android:hint="Source de Revenus"
+            android:hint="Objet de depense"
             android:layout_above="@+id/title" />
 
         <LinearLayout

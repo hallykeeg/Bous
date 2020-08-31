@@ -9,6 +9,7 @@ import android.widget.ListView;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,10 +70,12 @@ public class FragmentDepense extends Fragment {
         fabObjet = view.findViewById(R.id.objet);
 
         listView = view.findViewById(R.id.listviewDepenses);
-        arrayList = new ArrayList<>();
-
+        Date dt = new Date();
+        arrayList = DatabaseManager.getDatabaseManager(getContext()).selectDepensesByMonth(DaysOfMonth.getFirstDay(dt), DaysOfMonth.getLastDay(dt));
         customAdapter = new CustomAdapter(getContext(), R.layout.custom_listview, arrayList);
         listView.setAdapter(customAdapter);
+
+
         fabNouveau.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

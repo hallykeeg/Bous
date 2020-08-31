@@ -67,8 +67,7 @@ public class FragmentDettes extends Fragment {
         View view = inflater.inflate(R.layout.fragment_dettes, container, false);
         fab = view.findViewById(R.id.ajout_dettes);
         listView = view.findViewById(R.id.listviewDettes);
-        arrayList = new ArrayList<>();
-
+        arrayList = DatabaseManager.getDatabaseManager(getContext()).selectDettes();
         customAdapter = new CustomAdapter(getContext(), R.layout.custom_listview, arrayList);
         listView.setAdapter(customAdapter);
 

@@ -67,8 +67,7 @@ public class FragmentCreances extends Fragment {
         View view = inflater.inflate(R.layout.fragment_creances, container, false);
         fab = view.findViewById(R.id.ajout_creances);
         listView = view.findViewById(R.id.listviewCreances);
-        arrayList = new ArrayList<>();
-
+        arrayList = DatabaseManager.getDatabaseManager(getContext()).selectCreances();
         customAdapter = new CustomAdapter(getContext(), R.layout.custom_listview, arrayList);
         listView.setAdapter(customAdapter);
 
