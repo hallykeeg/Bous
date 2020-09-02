@@ -92,8 +92,8 @@ public class FragmentAccueil extends Fragment {
         //balance et epargne
         textViewBalance = view.findViewById(R.id.balance);
         textViewEpargne = view.findViewById(R.id.epargne);
-//        textViewBalance.setText(String.valueOf(DatabaseManager.getDatabaseManager(getContext()).getBalanceCourante()));
-//        textViewEpargne.setText(String.valueOf(DatabaseManager.getDatabaseManager(getContext()).getEpargneSolde()));
+        textViewBalance.setText(String.valueOf(DatabaseManager.getDatabaseManager(getContext()).getBalanceCourante()));
+        textViewEpargne.setText(String.valueOf(DatabaseManager.getDatabaseManager(getContext()).getEpargneSolde()));
 
         depensesButton.setOnClickListener(new View.OnClickListener() {
             @Override

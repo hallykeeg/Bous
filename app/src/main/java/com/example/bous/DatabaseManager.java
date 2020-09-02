@@ -115,11 +115,16 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public long insertEpargne(Epargne epargne) {
         long state;
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("date", epargne.getDate());
-        cv.put("montant", epargne.getMontant());
-        cv.put("operation", epargne.getOperation());
-        state = db.insert("epargne", null, cv);
+        float solde = getEpargneSolde();
+        if (epargne.getMontant() > solde) {
+            state = 404;
+        } else {
+            ContentValues cv = new ContentValues();
+            cv.put("date", epargne.getDate());
+            cv.put("montant", epargne.getMontant());
+            state = db.insert("epargne", null, cv);
+        }
+
         return state;
     }
 
@@ -289,21 +294,24 @@ public class DatabaseManager extends SQLiteOpenHelper {
     Pour trouver la balance: Somme(Revenus.montant)-Somme(revenus.epargne_montant)+somme(epargne.montant where operation=out)-somme(depenses.montant)
      */
     public float getBalanceCourante() {
-        float balance, sommeRevenus, sommeEpargne, sommeEpargneVersRevenus, sommeDepenses, sommeCreancesOut, sommeCreancesIn, sommeDettesOut, sommeDettesIn;
+        float balance = 0, sommeRevenus = 0, sommeEpargne = 0, sommeEpargneVersRevenus = 0, sommeDepenses = 0, sommeCreancesOut = 0, sommeCreancesIn = 0, sommeDettesOut = 0, sommeDettesIn = 0;
         SQLiteDatabase database = this.getReadableDatabase();
         //Somme revenus
         String sql = "SELECT SUM(montant) AS somme FROM revenus";
         Cursor cursor1 = database.rawQuery(sql, null);
-        cursor1.moveToFirst();
-        sommeRevenus = cursor1.getFloat(cursor1.getColumnIndex("somme"));
+
+        if (cursor1.moveToFirst()) {
+            sommeRevenus = cursor1.getFloat(cursor1.getColumnIndex("somme"));
+        }
         cursor1.close();
 
         //somme epargne
 
         String req = "SELECT SUM(epargne_montant) as somme_epargne FROM revenus";
         Cursor cursor2 = database.rawQuery(req, null);
-        cursor2.moveToFirst();
-        sommeEpargne = cursor2.getFloat(cursor2.getColumnIndex("somme_epargne"));
+        if (cursor2.moveToFirst()) {
+            sommeEpargne = cursor2.getFloat(cursor2.getColumnIndex("somme_epargne"));
+        }
         cursor2.close();
 
         //somme epargne vers revenus(retrait epargne)
@@ -311,41 +319,50 @@ public class DatabaseManager extends SQLiteOpenHelper {
         String requete = "SELECT SUM(montant) AS montant FROM epargne";
 
         Cursor cursor3 = database.rawQuery(requete, null);
-        cursor3.moveToFirst();
-        sommeEpargneVersRevenus = cursor3.getFloat(cursor3.getColumnIndex("montant"));
+        if (cursor3.moveToFirst()) {
+            sommeEpargneVersRevenus = cursor3.getFloat(cursor3.getColumnIndex("montant"));
+        }
         cursor3.close();
 
         //somme depenses
         String r = "SELECT SUM(montant) AS montant FROM depenses";
         Cursor cursor4 = database.rawQuery(r, null);
-        cursor4.moveToFirst();
-        sommeDepenses = cursor4.getFloat(cursor4.getColumnIndex("montant"));
+        if (cursor4.moveToFirst()) {
+            sommeDepenses = cursor4.getFloat(cursor4.getColumnIndex("montant"));
+        }
         cursor4.close();
         //somme creance OUT-> sortie d;argent
         String requeteCreance = "SELECT SUM(montant) as montant FROM creances WHERE date_remboursement IS NULL";
         Cursor cursorCreanceOut = database.rawQuery(requeteCreance, null);
-        cursorCreanceOut.moveToFirst();
-        sommeCreancesOut = cursorCreanceOut.getFloat(cursorCreanceOut.getColumnIndex("montant"));
+        if (cursorCreanceOut.moveToFirst()) {
+            sommeCreancesOut = cursorCreanceOut.getFloat(cursorCreanceOut.getColumnIndex("montant"));
+        }
         cursorCreanceOut.close();
 
         //somme creance IN->Rentree d'argent
 
         requeteCreance = "SELECT SUM(montant) as montant FROM creances WHERE date_remboursement IS NOT NULL";
         Cursor cursorCreanceIn = database.rawQuery(requeteCreance, null);
-        cursorCreanceIn.moveToFirst();
-        sommeCreancesIn = cursorCreanceIn.getFloat(cursorCreanceIn.getColumnIndex("montant"));
+
+        if (cursorCreanceIn.moveToFirst()) {
+            sommeCreancesIn = cursorCreanceIn.getFloat(cursorCreanceIn.getColumnIndex("montant"));
+        }
         cursorCreanceIn.close();
 
         //somme dette OUT: sortie d'argent(m peye det mwen)
         String requeteDettes = "SELECT SUM(montant) AS montant FROM dettes WHERE date_remboursement IS NOT NULL";
         Cursor cursorDettesOut = database.rawQuery(requeteDettes, null);
-        sommeDettesOut = cursorDettesOut.getFloat(cursorDettesOut.getColumnIndex("montant"));
+        if (cursorDettesOut.moveToFirst()) {
+            sommeDettesOut = cursorDettesOut.getFloat(cursorDettesOut.getColumnIndex("montant"));
+        }
         cursorDettesOut.close();
 
         //somme dette IN:rentree d'argent (kob m prete)
         requeteDettes = "SELECT SUM(montant) AS montant FROM dettes WHERE date_remboursement IS NULL";
         Cursor cursorDettesIn = database.rawQuery(requeteDettes, null);
-        sommeDettesIn = cursorDettesIn.getFloat(cursorDettesIn.getColumnIndex("montant"));
+        if (cursorDettesIn.moveToFirst()) {
+            sommeDettesIn = cursorDettesIn.getFloat(cursorDettesIn.getColumnIndex("montant"));
+        }
         cursorDettesIn.close();
 
         balance = sommeRevenus - sommeEpargne + sommeEpargneVersRevenus - sommeDepenses + sommeDettesIn - sommeDettesOut + sommeCreancesIn - sommeCreancesOut;
@@ -356,21 +373,22 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     public float getEpargneSolde() {
-        float solde, IN, OUT;
+        float solde = 0, IN = 0, OUT = 0;
         SQLiteDatabase database = this.getReadableDatabase();
         String req = "SELECT SUM(epargne_montant) as somme_epargne FROM revenus";
         Cursor cursor2 = database.rawQuery(req, null);
-        cursor2.moveToFirst();
-        IN = cursor2.getFloat(cursor2.getColumnIndex("somme_epargne"));
+        if (cursor2.moveToFirst()) {
+            IN = cursor2.getFloat(cursor2.getColumnIndex("somme_epargne"));
+        }
         cursor2.close();
 
 
         String requete = "SELECT SUM(montant) AS somme FROM epargne";
 
         Cursor cursorOut = database.rawQuery(requete, null);
-        cursor2.moveToFirst();
-        OUT = cursorOut.getFloat(cursorOut.getColumnIndex("somme"));
-
+        if (cursorOut.moveToFirst()) {
+            OUT = cursorOut.getFloat(cursorOut.getColumnIndex("somme"));
+        }
         solde = IN - OUT;
         if (solde < 0) {
             solde = 0;
