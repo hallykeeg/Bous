@@ -1,5 +1,7 @@
 package com.example.bous;
 
+import android.content.Context;
+
 public class CustomModel {
     private String date, objet;
     private float montant;
@@ -14,6 +16,16 @@ public class CustomModel {
 
     public int getId() {
         return id;
+    }
+
+    public long rembourserDettes(Context context, String dateRemboursement) {
+        int id = this.id;
+        return DatabaseManager.getDatabaseManager(context).DettesPaid(id, dateRemboursement);
+    }
+
+    public long rembourserCreances(Context context, String dateRemboursement) {
+        int id = this.id;
+        return DatabaseManager.getDatabaseManager(context).CreancesPaid(id, dateRemboursement);
     }
 
     public void setId(int id) {

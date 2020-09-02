@@ -1,9 +1,12 @@
 package com.example.bous;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
@@ -70,6 +73,41 @@ public class FragmentDettes extends Fragment {
         arrayList = DatabaseManager.getDatabaseManager(getContext()).selectDettes();
         customAdapter = new CustomAdapter(getContext(), R.layout.custom_listview, arrayList);
         listView.setAdapter(customAdapter);
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                String individu = arrayList.get(position).getObjet();
+                float montant = arrayList.get(position).getMontant();
+                builder.setTitle("Remboursement de Dettes");
+                builder.setMessage("Avez-vous rembourse " + montant + " HTG a " + individu + " ?");
+                builder.setPositiveButton("OUI", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        long resultat = arrayList.get(position).rembourserDettes(getContext(), DaysOfMonth.getDate());
+                        dialog.dismiss();
+                        if (resultat != -1) {
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentDettes()).commit();
+                            Screen.display("Remboursement enregistre!", getContext());
+                        } else {
+                            Screen.display("Erreur!", getContext());
+                        }
+                    }
+                });
+
+                builder.setNegativeButton("NON", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+                return true;
+            }
+
+            ;
+
+        });
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

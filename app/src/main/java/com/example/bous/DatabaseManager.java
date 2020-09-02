@@ -380,6 +380,26 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return solde;
     }
 
+    public long DettesPaid(int id, String date) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String whereClause = "id=?";
+        ContentValues cv = new ContentValues();
+        cv.put("date_remboursement", date);
+        String[] whereParams = new String[]{String.valueOf(id)};
+        long resultat = db.update("dettes", cv, whereClause, whereParams);
+        return resultat;
+    }
+
+    public long CreancesPaid(int id, String date) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String whereClause = "id=?";
+        ContentValues cv = new ContentValues();
+        cv.put("date_remboursement", date);
+        String[] whereParams = new String[]{String.valueOf(id)};
+        long resultat = db.update("creances", cv, whereClause, whereParams);
+        return resultat;
+    }
+
     //Selectionner les objets de depenses
     public ArrayList<ObjetDepenses> selectObjetDepenses() {
         ArrayList<ObjetDepenses> arrayList = new ArrayList<>();

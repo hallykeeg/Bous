@@ -10,4 +10,5 @@ public class Screen {
         toast.setGravity((Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL), 1, 5);
         toast.show();
     }
+
 }

@@ -26,4 +26,10 @@ public class DaysOfMonth {
         String dateString = format.format(dateFirstDay);
         return dateString;
     }
+
+    public static String getDate() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        return format.format(date);
+    }
 }
