@@ -146,7 +146,7 @@ public class FragmentEpargne extends Fragment {
             } else if (resultat != -1) {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentAccueil()).commit();
                 Screen.display("Transfert effectue", getContext());
-            } else {
+            } else if (resultat == -1) {
                 Screen.display("Erreur", getContext());
             }
         }

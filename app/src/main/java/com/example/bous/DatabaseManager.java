@@ -122,6 +122,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             ContentValues cv = new ContentValues();
             cv.put("date", epargne.getDate());
             cv.put("montant", epargne.getMontant());
+            cv.put("operation", "OUT");
             state = db.insert("epargne", null, cv);
         }
 
