@@ -24,7 +24,7 @@ public class CustomModel {
     }
 
     public long rembourserCreances(Context context, String dateRemboursement) {
-        int id = this.id;
+        int id = getId();
         return DatabaseManager.getDatabaseManager(context).CreancesPaid(id, dateRemboursement);
     }
 

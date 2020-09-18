@@ -38,7 +38,7 @@
                 android:layout_centerHorizontal="true"
                 android:ems="15"
                 android:gravity="center"
-                android:hint="22/09/2020" />
+                android:hint="Date" />
 
             <EditText
                 android:layout_width="match_parent"

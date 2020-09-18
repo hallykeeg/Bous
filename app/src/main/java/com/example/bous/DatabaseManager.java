@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class DatabaseManager extends SQLiteOpenHelper {
     private static DatabaseManager databaseManager = null;
-    private static final String name = "bous.db";
+    private static final String name = "database.db";
     private static final Integer version = 1;
 
 
@@ -21,10 +21,10 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     private static final String sourceRevenusTable = "CREATE TABLE IF NOT EXISTS source_revenus(id_source_revenus INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT(50) NOT NULL)";
 
-    private static final String dettesTable = "CREATE TABLE IF NOT EXISTS dettes(id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT(50) NOT NULL," +
-            "individu TEXT(50) NOT NULL, montant REAL  NOT NULL, date_remboursement TEXT(50)) ";
+    private static final String dettesTable = "CREATE TABLE IF NOT EXISTS dettes(id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT(50)," +
+            "individu TEXT(50) NOT NULL, montant REAL  NOT NULL, date_remboursement TEXT(50))";
 
-    private static final String creancesTable = "CREATE TABLE IF NOT EXISTS creances(id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT(50) NOT NULL," +
+    private static final String creancesTable = "CREATE TABLE IF NOT EXISTS creances(id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT(50)," +
             "individu TEXT(50) NOT NULL, montant REAL  NOT NULL, date_remboursement TEXT(50))";
 
     private static final String revenusTable = "CREATE TABLE IF NOT EXISTS revenus(id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT(50) NOT NULL,epargne_montant REAL NOT NULL, montant REAL NOT NULL," +
@@ -65,6 +65,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.execSQL(dettesTable);
         db.execSQL(creancesTable);
     }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -118,6 +119,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
         float solde = getEpargneSolde();
         if (epargne.getMontant() > solde) {
             state = 404;
+        } else if (epargne.getMontant() == 0) {
+            state = 000;
         } else {
             ContentValues cv = new ContentValues();
             cv.put("date", epargne.getDate());
@@ -242,7 +245,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
         String date;
         String[] params = new String[]{debut, fin};
         String sql = "SELECT * FROM revenus WHERE date BETWEEN ? AND ? ORDER BY date DESC";
-        final Cursor cursor = db.rawQuery(sql, params);
+        String sql2 = "SELECT * FROM revenus ORDER BY date DESC";
+        final Cursor cursor = db.rawQuery(sql2, null);
         while (cursor.moveToNext()) {
             id = cursor.getInt(cursor.getColumnIndex("id"));
             date = cursor.getString(cursor.getColumnIndex("date"));
@@ -271,7 +275,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
         String date;
         String[] params = new String[]{debut, fin};
         String sql = "SELECT * FROM depenses WHERE date BETWEEN ? AND ? ORDER BY date DESC";
-        final Cursor cursor = db.rawQuery(sql, params);
+        String sql2 = "SELECT * FROM depenses ORDER BY date DESC";
+
+        final Cursor cursor = db.rawQuery(sql2, null);
         while (cursor.moveToNext()) {
             id = cursor.getInt(cursor.getColumnIndex("id"));
             date = cursor.getString(cursor.getColumnIndex("date"));
@@ -342,25 +348,26 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
         //somme creance IN->Rentree d'argent
 
-        requeteCreance = "SELECT SUM(montant) as montant FROM creances WHERE date_remboursement IS NOT NULL";
-        Cursor cursorCreanceIn = database.rawQuery(requeteCreance, null);
-
-        if (cursorCreanceIn.moveToFirst()) {
-            sommeCreancesIn = cursorCreanceIn.getFloat(cursorCreanceIn.getColumnIndex("montant"));
-        }
-        cursorCreanceIn.close();
+//        requeteCreance = "SELECT SUM(montant) as montant FROM creances WHERE date_remboursement IS NOT NULL";
+//        Cursor cursorCreanceIn = database.rawQuery(requeteCreance, null);
+//
+//        if (cursorCreanceIn.moveToFirst()) {
+//            sommeCreancesIn = cursorCreanceIn.getFloat(cursorCreanceIn.getColumnIndex("montant"));
+//        }
+//        cursorCreanceIn.close();
 
         //somme dette OUT: sortie d'argent(m peye det mwen)
-        String requeteDettes = "SELECT SUM(montant) AS montant FROM dettes WHERE date_remboursement IS NOT NULL";
-        Cursor cursorDettesOut = database.rawQuery(requeteDettes, null);
-        if (cursorDettesOut.moveToFirst()) {
-            sommeDettesOut = cursorDettesOut.getFloat(cursorDettesOut.getColumnIndex("montant"));
-        }
-        cursorDettesOut.close();
+//        String requeteDettes = "SELECT SUM(montant) AS montant FROM dettes WHERE date_remboursement IS NOT NULL";
+//        Cursor cursorDettesOut = database.rawQuery(requeteDettes, null);
+//        if (cursorDettesOut.moveToFirst()) {
+//            sommeDettesOut = cursorDettesOut.getFloat(cursorDettesOut.getColumnIndex("montant"));
+//        }
+//        cursorDettesOut.close();
 
         //somme dette IN:rentree d'argent (kob m prete)
-        requeteDettes = "SELECT SUM(montant) AS montant FROM dettes WHERE date_remboursement IS NULL";
-        Cursor cursorDettesIn = database.rawQuery(requeteDettes, null);
+        //on comptabilise uniquement les prets qui ne sont pas encore rembourses.
+        String requeteDettesIn = "SELECT SUM(montant) AS montant FROM dettes WHERE date_remboursement IS NULL";
+        Cursor cursorDettesIn = database.rawQuery(requeteDettesIn, null);
         if (cursorDettesIn.moveToFirst()) {
             sommeDettesIn = cursorDettesIn.getFloat(cursorDettesIn.getColumnIndex("montant"));
         }

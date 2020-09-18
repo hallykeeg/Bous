@@ -143,6 +143,8 @@ public class FragmentEpargne extends Fragment {
             resultat = DatabaseManager.getDatabaseManager(getContext()).insertEpargne(new Epargne(date, montant, "OUT"));
             if (resultat == 404) {
                 editTextMontant.setError("Pas assez d'argent");
+            } else if (resultat == 000) {
+                editTextMontant.setError("Montant incorrect");
             } else if (resultat != -1) {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentAccueil()).commit();
                 Screen.display("Transfert effectue", getContext());
